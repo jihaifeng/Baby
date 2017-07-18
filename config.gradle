@@ -1,0 +1,15 @@
+ext {
+  /*
+  * @time；20170630
+  * @author：jihaifeng
+  *
+  * android:versionCode="52082"
+  * android:versionName="5.3.2"
+  * package="com.neusoft.td.android.wo116114"
+  */
+  keyStore = [storeFilePath: "wo116114.keystore", //密钥文件路径
+              storePassword: "IBD@123", //密钥文件密码
+              keyAlias     : "wo116114-release", //key别名
+              keyPassword  : "IBD@123" //key密码
+  ]
+}
