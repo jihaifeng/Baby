@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+// 签名文件
+def keyStore = rootProject.ext.keyStore
+android {
+  compileSdkVersion 25
+  buildToolsVersion "25.0.3"
+  defaultConfig {
+    applicationId "com.jihf.baby"
+    minSdkVersion 15
+    targetSdkVersion 25
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+  signingConfigs {
+    //签名配置
+    release {
+      //发布版签名配置
+      storeFile file(keyStore.storeFilePath) //密钥文件路径
+      storePassword keyStore.storePassword //密钥文件密码
+      keyAlias keyStore.keyAlias //key别名
+      keyPassword keyStore.keyPassword //key密码
+    }
+    debug {
+      //debug版签名配置
+      storeFile file(keyStore.storeFilePath) //密钥文件路径
+      storePassword keyStore.storePassword //密钥文件密码
+      keyAlias keyStore.keyAlias //key别名
+      keyPassword keyStore.keyPassword //key密码
+    }
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+dependencies {
+  compile fileTree(include: ['*.jar'], dir: 'libs')
+  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    exclude group: 'com.android.support', module: 'support-annotations'
+  })
+  compile 'com.android.support:appcompat-v7:25.3.1'
+  testCompile 'junit:junit:4.12'
+  compile project(':2491Lib')
+}

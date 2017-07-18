@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.jihf.lib"
+    >
+
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+  <application>
+    <activity
+        android:name="com.jihf.lib.activity.SplashActivity"
+        android:theme="@style/StartTheme"
+        >
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+    <!--浏览器页面-->
+    <activity
+        android:name="com.jihf.lib.activity.WebActivity"
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait"
+        />
+    <!--主页面-->
+    <activity
+        android:name="com.jihf.lib.activity.MainActivity"
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait"
+        />
+    <!--微信回调-->
+    <activity
+        android:name="com.jihf.lib.wxapi.WXEntryActivity"
+        android:exported="true"
+        />
+    <!--QQ-->
+    <activity
+        android:name="com.tencent.tauth.AuthActivity"
+        android:launchMode="singleTask"
+        android:noHistory="true"
+        >
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+
+        <data android:scheme="tencent101407009"/>
+      </intent-filter>
+    </activity>
+    <activity
+        android:name="com.tencent.connect.common.AssistActivity"
+        android:configChanges="orientation|keyboardHidden|screenSize"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar"
+        />
+
+<!--    <meta-data
+        android:name="UMENG_APPKEY"
+        android:value="59672f6b65b6d61138000442"
+        />-->
+    <meta-data
+        android:name="UMENG_CHANNEL"
+        android:value="2491"
+        />
+  </application>
+</manifest>

@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.jihf.baby"
+    >
+  <!--package是你项目的包名-->
+  <!--name是你的自定义Application继承自BaseApplication-->
+  <application
+      android:name="com.jihf.baby.MyApplication"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:supportsRtl="true"
+      android:theme="@style/AppLibTheme"
+      >
+    <!--微信回调-->
+    <activity
+        android:name=".wxapi.WXEntryActivity"
+        android:exported="true"
+        />
+  </application>
+
+</manifest>

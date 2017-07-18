@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+      android:id="@+id/sf_root"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_fun_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+  </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
+
+  <android.support.design.widget.FloatingActionButton
+      android:id="@+id/fab_to_top"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom|end"
+      android:layout_marginBottom="@dimen/dp_68"
+      android:layout_marginEnd="@dimen/dp_22"
+      android:layout_marginRight="@dimen/dp_22"
+      android:src="@mipmap/ic_back_top"
+      app:rippleColor="#33728dff"/>
+</FrameLayout>

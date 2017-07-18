@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fl_empty_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+  <RelativeLayout
+      android:id="@+id/rl_error_root"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="visible">
+
+    <ImageView
+        android:id="@+id/iv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@mipmap/ic_not_network"/>
+
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_error"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_22"
+        android:text="网络异常，点击重试"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp"/>
+  </RelativeLayout>
+
+  <com.github.ybq.android.spinkit.SpinKitView
+      android:id="@+id/spin_kit_loading"
+      android:layout_width="@dimen/dp_44"
+      android:visibility="gone"
+      android:layout_height="@dimen/dp_44"
+      android:layout_gravity="center"
+      app:SpinKit_Color="@color/colorPrimary"
+      app:SpinKit_Style="Wave"/>
+
+</FrameLayout>
