@@ -3,11 +3,12 @@ package com.jihf.lib.activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import com.jihf.lib.R;
 import com.jihf.lib.adapter.FunAdapter;
@@ -18,12 +19,14 @@ import com.jihf.lib.constans.UmengConfig;
 import com.jihf.lib.entity.FunBean;
 import com.jihf.lib.http.HttpListener;
 import com.jihf.lib.http.OkGoHelper;
+import com.jihf.lib.update.VersionUpdate;
 import com.jihf.lib.utils.AppUtils;
 import com.jihf.lib.utils.LogUtils;
 import com.jihf.lib.utils.NetworkUtils;
 import com.jihf.lib.utils.ScreenUtils;
 import com.jihf.lib.utils.snackBar.SnackBarType;
 import com.jihf.lib.utils.snackBar.SnackBarUtils;
+import com.jihf.lib.widget.CircleView;
 import com.jihf.lib.widget.recyclerview.DividerItemDecoration;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
@@ -40,7 +43,7 @@ public class MainActivity extends BaseSimpleActivity implements HttpListener<Lis
 
   private RecyclerView rvFunData;
   private TwinklingRefreshLayout sfRoot;
-  private FloatingActionButton fabToTop;
+  private FrameLayout fabToTop;
   private boolean isLoadMore = false;
   private boolean isOnRefresh = true;
   private FunAdapter funAdapter;
@@ -49,6 +52,7 @@ public class MainActivity extends BaseSimpleActivity implements HttpListener<Lis
   private boolean curDataIsNull = true;
   private int clickNum = 0;
   private long clickTime;
+  boolean isChecked = false;
 
   @Override protected int getLayoutId() {
     return R.layout.activity_main;
@@ -58,6 +62,8 @@ public class MainActivity extends BaseSimpleActivity implements HttpListener<Lis
     rvFunData = getView(R.id.rv_fun_data);
     sfRoot = getView(R.id.sf_root);
     fabToTop = getView(R.id.fab_to_top);
+    CircleView circleView = getView(R.id.iv_flow_refresh_bg);
+    circleView.setBackgroundColor(ContextCompat.getColor(this, R.color.backTop));
     getToolBar().setTitle(getResources().getString(R.string.app_name));
     getToolBar().setOnClickListener(v -> onClickTime());
     featchData(true, false);
@@ -107,13 +113,23 @@ public class MainActivity extends BaseSimpleActivity implements HttpListener<Lis
       @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
         LogUtils.i(TAG, "onScrolled: " + layoutManager.findFirstVisibleItemPosition());
-        if (layoutManager.findFirstVisibleItemPosition() > 15) {
+        if (layoutManager.findFirstVisibleItemPosition() > 7) {
           fabToTop.setVisibility(View.VISIBLE);
         } else {
           fabToTop.setVisibility(View.GONE);
         }
       }
     });
+    isChecked = false;
+    checkUpdate();
+  }
+
+  private void checkUpdate() {
+    if (isChecked) {
+      return;
+    }
+    VersionUpdate.getInstance(this).checkForUpdate(false, true, false);
+    isChecked = true;
   }
 
   private void onClickTime() {

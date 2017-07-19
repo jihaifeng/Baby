@@ -49,3 +49,36 @@ buildscript {
 ```
 5. 将wxapi文件夹复制到主工程包名目录下，接受微信分享回调
 6. 最后设置logo和splash图片，ic_launcher，ic_splash
+7. 多渠道打包，在主工程的build.gradle文件下添加以下代码：
+```
+android {
+  ...
+  defaultConfig {
+    ...
+    // 添加这句
+    manifestPlaceholders = [UMENG_CHANNEL_VALUE: "2491"] //默认名称
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    // 自定义输出配置，这里我们加上APK版本号1.0，可以省略
+    applicationVariants.all { variant ->
+      variant.outputs.each { output ->
+        def outputFile = output.outputFile
+        if (outputFile != null && outputFile.name.endsWith('.apk')) {
+        // 输出apk名称为appName_v1.0_baidu.apk
+          def fileName = "你的应用名字" + "_v${defaultConfig.versionName}_${variant.productFlavors[0].name}.apk"
+          output.outputFile = new File(outputFile.parent, fileName)
+        }
+      }
+    }
+  }
+  productFlavors {
+    "2491" {}
+    yingyongbao {}
+    baidu {}
+
+    productFlavors.all { flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+    }
+  }
+  ...
+  }
+
+```

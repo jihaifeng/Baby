@@ -9,7 +9,7 @@ android {
     minSdkVersion 15
     targetSdkVersion 25
     versionCode 1
-    versionName "1.0"
+    versionName "1.0.0"
     manifestPlaceholders = [UMENG_CHANNEL_VALUE: "2491"] //默认名称
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     // 自定义输出配置，这里我们加上APK版本号1.0
@@ -17,16 +17,18 @@ android {
       variant.outputs.each { output ->
         def outputFile = output.outputFile
         if (outputFile != null && outputFile.name.endsWith('.apk')) {
-          // 输出apk名称为wooyun_v1.0_wandoujia.apk
-          def fileName = "爱婴之家"+"_v${defaultConfig.versionName}_${variant.productFlavors[0].name}.apk"
+          // 输出apk名称为appName_v1.0_baidu.apk
+          def fileName = "爱婴之家" + "_v${defaultConfig.versionName}_${variant.productFlavors[0].name}.apk"
           output.outputFile = new File(outputFile.parent, fileName)
         }
       }
     }
   }
   productFlavors {
+    "2491" {}
     yingyongbao {}
     baidu {}
+
     productFlavors.all { flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
     }
   }

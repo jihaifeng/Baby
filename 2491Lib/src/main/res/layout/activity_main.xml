@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -18,14 +17,31 @@
     </android.support.v7.widget.RecyclerView>
   </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
 
-  <android.support.design.widget.FloatingActionButton
+  <FrameLayout
       android:id="@+id/fab_to_top"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom|end"
-      android:layout_marginBottom="@dimen/dp_68"
+
+      android:layout_width="@dimen/dp_40"
+      android:layout_height="@dimen/dp_40"
+      android:layout_gravity="end|bottom"
+      android:layout_marginBottom="@dimen/dp_22"
       android:layout_marginEnd="@dimen/dp_22"
-      android:layout_marginRight="@dimen/dp_22"
-      android:src="@mipmap/ic_back_top"
-      app:rippleColor="#33728dff"/>
+      android:layout_marginRight="@dimen/dp_22">
+
+    <com.jihf.lib.widget.CircleView
+        android:id="@+id/iv_flow_refresh_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dp_2"
+        />
+
+    <ImageView
+        android:id="@+id/iv_flow_refresh"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/dp_2"
+        android:padding="@dimen/dp_5"
+        android:src="@mipmap/ic_back_top"
+        />
+  </FrameLayout>
 </FrameLayout>
