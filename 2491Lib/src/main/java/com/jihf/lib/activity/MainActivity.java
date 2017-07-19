@@ -128,7 +128,7 @@ public class MainActivity extends BaseSimpleActivity implements HttpListener<Lis
     if (isChecked) {
       return;
     }
-    VersionUpdate.getInstance(this).checkForUpdate(false, true, false);
+    VersionUpdate.getInstance(this).checkForUpdate(false, false, false);
     isChecked = true;
   }
 
