@@ -17,12 +17,12 @@ public class UmengConfig {
   private static String UMENG_CHANNEL = "2491_joke";
 
   public static void init(String key) {
+    UMENG_CHANNEL = AppUtils.getMarket();
     if (StringUtils.isTrimEmpty(key)) {
       Log.i("UmengConfig", "umeng初始化失败，appkey为空");
       return;
     }
     UMENG_APPKEY = key;
-    UMENG_CHANNEL = AppUtils.getMarket();
     Log.i("UmengConfig", "umeng初始化成功，appkey= " + UMENG_APPKEY + "channel= " + UMENG_CHANNEL);
   }
 
