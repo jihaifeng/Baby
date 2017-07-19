@@ -11,6 +11,7 @@ import com.jihf.lib.constans.UrlBean;
 import com.jihf.lib.http.OkGoHelper;
 import com.jihf.lib.share.ShareBean;
 import com.jihf.lib.share.ShareConfig;
+import com.jihf.lib.update.VersionUpdate;
 import com.jihf.lib.utils.AppUtils;
 import com.jihf.lib.utils.DeviceUtils;
 import com.jihf.lib.utils.LogUtils;
@@ -66,7 +67,7 @@ public abstract class BaseApplication extends Application {
     UmengConfig.init(initUmengAppKey());
     setShare(initShare());
     setUrl(initUrl());
-
+    VersionUpdate.setUpdateTag(initUpdateTag());
     /*
      * umeng统计
      *
@@ -135,4 +136,7 @@ public abstract class BaseApplication extends Application {
 
   // 数组长度为定长4，分别对应umeng的Key,channel
   public abstract String initUmengAppKey();
+
+  // 升级Tag
+  public abstract String initUpdateTag();
 }

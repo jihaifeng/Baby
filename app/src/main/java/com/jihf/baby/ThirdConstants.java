@@ -23,4 +23,6 @@ class ThirdConstants {
   static String pathDetails = "/gaoxiao/template/freemarker/getNewsDetail";
   static String tagId = "033";
   static String defaultWebUrl = "http://hdpdmp.api.wo116114.com/motherpage.html";
+  // 升级tag，去应用发布平台查看
+  static String UpdateTag = "2491Baby";
 }

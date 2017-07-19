@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.jihf.lib.R;
 import com.jihf.lib.utils.AppUtils;
+import com.jihf.lib.utils.StringUtils;
 import com.jihf.lib.wxapi.ProgressDialogCommon;
 import com.ruiyi.updatelib.apppublish.AppPublishHandler;
 import com.ruiyi.updatelib.apppublish.CFUResponseModel;
@@ -30,9 +31,17 @@ public class VersionUpdate {
   private Dialog dialog;
   @SuppressLint ("StaticFieldLeak") private static VersionUpdate instance;
   private Context mContext;
-  private String APP_TAG = "2491Baby"; // 应用代码===》发布平台查看看
+
+  private static String APP_TAG = "2491Joke"; // 应用代码===》发布平台查看看
 
   private String TAG_MARKET = "2491";//
+
+  public static void setUpdateTag(String tag) {
+    if (StringUtils.isTrimEmpty(tag)) {
+      return;
+    }
+    APP_TAG = tag;
+  }
 
   public VersionUpdate(Context context) {
     if (null == context) {

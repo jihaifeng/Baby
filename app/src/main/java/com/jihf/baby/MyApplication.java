@@ -40,4 +40,8 @@ public class MyApplication extends BaseApplication {
   @Override public String initUmengAppKey() {
     return ThirdConstants.UmengAppKey;
   }
+
+  @Override public String initUpdateTag() {
+    return ThirdConstants.UpdateTag;
+  }
 }
