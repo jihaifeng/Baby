@@ -3,7 +3,6 @@ package com.jihf.baby.wxapi;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 import com.jihf.lib.share.ShareConfig;
 import com.tencent.mm.sdk.openapi.BaseReq;
 import com.tencent.mm.sdk.openapi.BaseResp;
@@ -40,7 +39,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     }
 
     if (result != null) {
-      Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+      Log.i(TAG, "onResp: " + result);
     }
     Log.i(TAG, "onResp: " + baseResp.errStr + "\n" + baseResp.errCode);
   }

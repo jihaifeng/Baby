@@ -2,8 +2,8 @@ package com.jihf.lib.wxapi;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 import com.jihf.lib.share.ShareConfig;
 import com.tencent.mm.sdk.openapi.BaseReq;
 import com.tencent.mm.sdk.openapi.BaseResp;
@@ -39,8 +39,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         break;
     }
 
-    if (result != null) {
-      Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+    if (!TextUtils.isEmpty(result)) {
+      Log.i(TAG, "onResp: " + result);
     }
     Log.i(TAG, "onResp: " + baseResp.errStr + "\n" + baseResp.errCode);
   }

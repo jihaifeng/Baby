@@ -2,7 +2,9 @@ package com.jihf.lib.share;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.widget.Toast;
+import com.jihf.lib.utils.BitmapUtils;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -10,7 +12,6 @@ import com.tencent.mm.sdk.openapi.WXImageObject;
 import com.tencent.mm.sdk.openapi.WXMediaMessage;
 import com.tencent.mm.sdk.openapi.WXTextObject;
 import com.tencent.mm.sdk.openapi.WXWebpageObject;
-import java.io.ByteArrayOutputStream;
 
 public class WXShareUtil {
 
@@ -108,14 +109,14 @@ public class WXShareUtil {
     }
     //初始化一个WXMediaMessage对象，填写标题、描述
     WXMediaMessage msg = new WXMediaMessage(mediaObject);
-    if (title != null) {
+    if (!TextUtils.isEmpty(title)) {
       msg.title = title;
     }
-    if (description != null) {
+    if (!TextUtils.isEmpty(description)) {
       msg.description = description;
     }
     if (thumb != null) {
-      msg.thumbData = bmpToByteArray(thumb, true);
+      msg.thumbData = BitmapUtils.cov2ByteArray(thumb,30);
     }
     //构造一个Req
     SendMessageToWX.Req req = new SendMessageToWX.Req();
@@ -128,7 +129,21 @@ public class WXShareUtil {
     }
     return api.sendReq(req);
   }
-
+  public static Bitmap checkImageSize(Bitmap bitmap) {
+    //防止超长图文件大小超过微信限制，需要进行截取，暂定比例上限为5
+    final int MAX_RATIO = 5;
+    Bitmap result = bitmap;
+    if (bitmap != null) {
+      int width = bitmap.getWidth();
+      int height = bitmap.getHeight();
+      float ratio = width > height ? width*1.0f / height : height*1.0f / width;
+      if (ratio > MAX_RATIO) {
+        int size = Math.min(width, height);
+        result = Bitmap.createBitmap(bitmap, 0, 0, size, size);
+      }
+    }
+    return result;
+  }
   private boolean isWXCanShare() {
     if (!api.isWXAppInstalled()) {
       Toast.makeText(context, "您未安装微信哦", Toast.LENGTH_SHORT).show();
@@ -148,19 +163,4 @@ public class WXShareUtil {
     return wxSdkVersion >= TIMELINE_SUPPORTED_VERSION;
   }
 
-  private byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
-    ByteArrayOutputStream output = new ByteArrayOutputStream();
-    bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
-    if (needRecycle) {
-      bmp.recycle();
-    }
-    byte[] result = output.toByteArray();
-    try {
-      output.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return result;
-  }
 }

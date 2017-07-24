@@ -1,11 +1,12 @@
 package com.jihf.lib.share;
 
 import android.app.Activity;
-import android.widget.Toast;
+import android.util.Log;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.UiError;
 
 public class ShareListener implements IUiListener {
+  private static final String TAG = ShareListener.class.getSimpleName().trim();
   private Activity activity;
 
   public ShareListener(Activity activity) {
@@ -13,14 +14,14 @@ public class ShareListener implements IUiListener {
   }
 
   @Override public void onCancel() {
-    Toast.makeText(activity, "分享取消", Toast.LENGTH_SHORT).show();
+    Log.i(TAG, "onCancel: 分享取消");
   }
 
   @Override public void onComplete(Object arg0) {
-    Toast.makeText(activity, "分享成功", Toast.LENGTH_SHORT).show();
+    Log.i(TAG, "onComplete: 分享成功");
   }
 
   @Override public void onError(UiError arg0) {
-    Toast.makeText(activity, "分享出错", Toast.LENGTH_SHORT).show();
+    Log.i(TAG, "onError: 分享出错");
   }
 }
