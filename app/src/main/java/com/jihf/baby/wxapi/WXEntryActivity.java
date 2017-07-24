@@ -2,6 +2,7 @@ package com.jihf.baby.wxapi;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import com.jihf.lib.share.ShareConfig;
 import com.tencent.mm.sdk.openapi.BaseReq;
@@ -38,7 +39,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         break;
     }
 
-    if (result != null) {
+    if (!TextUtils.isEmpty(result)) {
       Log.i(TAG, "onResp: " + result);
     }
     Log.i(TAG, "onResp: " + baseResp.errStr + "\n" + baseResp.errCode);
