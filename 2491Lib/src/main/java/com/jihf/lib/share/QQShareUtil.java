@@ -1,9 +1,9 @@
 package com.jihf.lib.share;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
-import com.jihf.lib.activity.WebActivity;
 import com.tencent.connect.share.QQShare;
 import com.tencent.open.utils.ThreadManager;
 import com.tencent.tauth.Tencent;
@@ -20,10 +20,10 @@ public class QQShareUtil {
   private static final String TAG = QQShareUtil.class.getSimpleName().trim();
   private static QQShareUtil instance;
   private Tencent mTencent;
-  private WebActivity activity;
+  private Activity activity;
   private ShareListener listener;
 
-  public static QQShareUtil getInstance(WebActivity activity) {
+  public static QQShareUtil getInstance(Activity activity) {
     if (null == instance) {
       synchronized (WXShareUtil.class) {
         if (null == instance) {
