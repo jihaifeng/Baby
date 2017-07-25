@@ -2,6 +2,7 @@ package com.jihf.lib.share;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Toast;
 import com.jihf.lib.activity.WebActivity;
 import com.tencent.connect.share.QQShare;
@@ -43,7 +44,7 @@ public class QQShareUtil {
     listener = new ShareListener(activity);
   }
 
-  public void shareUrl(String url, String title, String desc, @QQShareType int type) {
+  public void shareUrl(String url, String title, String desc,String imageUrl, @QQShareType int type) {
     if (mTencent.isSessionValid() && mTencent.getOpenId() == null) {
       Toast.makeText(activity, "您还未安装QQ", Toast.LENGTH_SHORT).show();
     }
@@ -54,6 +55,8 @@ public class QQShareUtil {
     params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
     params.putString(QQShare.SHARE_TO_QQ_SUMMARY, desc);
     params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, url);
+    if (!TextUtils.isEmpty(imageUrl))
+    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,imageUrl);
     if (type == QQShareType.QZONE) {
       params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
     }

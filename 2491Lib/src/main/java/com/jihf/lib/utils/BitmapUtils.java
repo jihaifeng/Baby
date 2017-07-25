@@ -179,39 +179,4 @@ public class BitmapUtils {
     bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
     return baos.toByteArray();
   }
-
-  public static byte[] cov2ByteArray(Bitmap bmp, float size) {
-    ByteArrayOutputStream output = new ByteArrayOutputStream();
-    byte[] result;
-    try {
-      bmp.compress(Bitmap.CompressFormat.JPEG, 100, output);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
-      int options = 100;
-      while (output.toByteArray().length / 1024 >= size) {  //循环判断如果压缩后图片是否大于size kb,大于继续压缩
-        output.reset();//重置baos即清空baos
-        bmp.compress(Bitmap.CompressFormat.JPEG, options, output);//这里压缩options%，把压缩后的数据存放到baos中
-        if (options == 1) {
-          break;
-        }
-        options -= 10;//每次都减少20
-        if (options <= 0) {
-          options = 1;
-        }
-      }
-
-      result = output.toByteArray();
-
-      Log.i("compressBitmap", "compressBitmap return length = " + result.length);
-
-      return result;
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    } finally {
-      try {
-        output.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  }
 }

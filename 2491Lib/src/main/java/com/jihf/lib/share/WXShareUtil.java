@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.widget.Toast;
-import com.jihf.lib.utils.BitmapUtils;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -116,7 +115,17 @@ public class WXShareUtil {
       msg.description = description;
     }
     if (thumb != null) {
-      msg.thumbData = BitmapUtils.cov2ByteArray(thumb,30);
+      byte[] bt = null;
+      Bitmap bitmap = WxThumUtils.extractThumbNail(thumb, 300, 300, false);
+      if (null != bitmap) {
+       Bitmap  tempBitmap = WxThumUtils.checkImageSize(bitmap);
+        if (null != tempBitmap) {
+          bt = WxThumUtils.compressBitmapToData(tempBitmap, 30);
+        }
+      }
+      if (null != bt) {
+        msg.thumbData = bt;
+      }
     }
     //构造一个Req
     SendMessageToWX.Req req = new SendMessageToWX.Req();
@@ -129,6 +138,7 @@ public class WXShareUtil {
     }
     return api.sendReq(req);
   }
+
   public static Bitmap checkImageSize(Bitmap bitmap) {
     //防止超长图文件大小超过微信限制，需要进行截取，暂定比例上限为5
     final int MAX_RATIO = 5;
@@ -136,7 +146,7 @@ public class WXShareUtil {
     if (bitmap != null) {
       int width = bitmap.getWidth();
       int height = bitmap.getHeight();
-      float ratio = width > height ? width*1.0f / height : height*1.0f / width;
+      float ratio = width > height ? width * 1.0f / height : height * 1.0f / width;
       if (ratio > MAX_RATIO) {
         int size = Math.min(width, height);
         result = Bitmap.createBitmap(bitmap, 0, 0, size, size);
@@ -144,6 +154,7 @@ public class WXShareUtil {
     }
     return result;
   }
+
   private boolean isWXCanShare() {
     if (!api.isWXAppInstalled()) {
       Toast.makeText(context, "您未安装微信哦", Toast.LENGTH_SHORT).show();
@@ -162,5 +173,4 @@ public class WXShareUtil {
     int wxSdkVersion = api.getWXAppSupportAPI();
     return wxSdkVersion >= TIMELINE_SUPPORTED_VERSION;
   }
-
 }

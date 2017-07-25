@@ -21,8 +21,8 @@ import com.jihf.lib.share.QQShareUtil;
 import com.jihf.lib.share.WXShareType;
 import com.jihf.lib.share.WXShareUtil;
 import com.jihf.lib.utils.BitmapCovListener;
-import com.jihf.lib.utils.BitmapUtils;
 import com.jihf.lib.utils.LogUtils;
+import com.jihf.lib.share.WxThumUtils;
 import com.jihf.lib.widget.SharePopwindow;
 import com.just.library.AgentWeb;
 import java.io.IOException;
@@ -69,8 +69,9 @@ public class WebActivity extends BaseSimpleActivity implements View.OnClickListe
     webUrl = TextUtils.isEmpty(webKey) ? URLConfig.getDefaultWebUrl() : okGoHelper.appendDetailUrl(webKey);
     openUrl();
     setIvRight(R.mipmap.ic_share_logo, v -> {
-      BitmapUtils.covBitmapFromUrl(shareUrl, new BitmapCovListener() {
+      WxThumUtils.covBitmapFromUrl(shareUrl, new BitmapCovListener() {
         @Override public void covSuccess(Bitmap bitmap) {
+          Log.i(TAG, "covSuccess: " + bitmap);
           shareBitmap = bitmap;
         }
 
@@ -106,19 +107,18 @@ public class WebActivity extends BaseSimpleActivity implements View.OnClickListe
           Elements imgElements = doc.getElementsByTag("img");
           if (null != imgElements && imgElements.size() != 0) {
             shareUrl = imgElements.first().absUrl("src");
-            Log.i(TAG, "img: " + shareUrl);
           } else {
             shareUrl = "";
           }
           Elements titleElements = doc.getElementsByTag("h1");
-          Log.i(TAG, "title: " + titleElements.first().ownText());
           Elements bodyElements = doc.getElementsByTag("p");
-          StringBuffer buffer = new StringBuffer();
+          StringBuilder builder = new StringBuilder();
           for (Element element : bodyElements) {
-            Log.i(TAG, "body: " + element.ownText());
-            buffer.append(element.ownText());
+            builder.append(element.ownText());
           }
-          shareDesc = buffer.toString();
+          Log.i(TAG, "run: " + builder.length());
+          shareDesc = builder.length() > 100 ? builder.substring(0, 100) : builder.toString();
+          Log.i(TAG, "run: " + shareDesc.length());
         } catch (IOException e) {
           e.printStackTrace();
         }
@@ -133,7 +133,7 @@ public class WebActivity extends BaseSimpleActivity implements View.OnClickListe
     if (null == shareBitmap) {
       shareBitmap = BitmapFactory.decodeResource(getResources(), BaseApplication.logo);
     }
-    Log.i(TAG, "onClick: " + shareUrl + "\n" + shareBitmap);
+    Log.i(TAG, "onClick: " + shareUrl + "\n" + shareBitmap + "\n" + shareDesc.length());
     if (v.getId() == R.id.tv_wx_friend) {
       // 微信分享给朋友
       WXShareUtil.getInstance(WebActivity.this)
@@ -144,10 +144,10 @@ public class WebActivity extends BaseSimpleActivity implements View.OnClickListe
           .shareUrl(webUrl, webTitle, shareBitmap, shareDesc, WXShareType.WX_CIRCLE);
     } else if (v.getId() == R.id.tv_qq_friend) {
       // 分享到QQ
-      QQShareUtil.getInstance(WebActivity.this).shareUrl(webUrl, webTitle, shareDesc, QQShareType.QQ);
+      QQShareUtil.getInstance(WebActivity.this).shareUrl(webUrl, webTitle, shareDesc,shareUrl, QQShareType.QQ);
     } else if (v.getId() == R.id.tv_qq_qzone) {
       // 分享到QQ空间
-      QQShareUtil.getInstance(WebActivity.this).shareUrl(webUrl, webTitle, shareDesc, QQShareType.QZONE);
+      QQShareUtil.getInstance(WebActivity.this).shareUrl(webUrl, webTitle, shareDesc,shareUrl, QQShareType.QZONE);
     }
   }
 
