@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.widget.Toast;
+import com.jihf.lib.utils.BitmapCovListener;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -61,16 +62,39 @@ public class WXShareUtil {
   /**
    * 分享图片到朋友圈或者好友
    *
+   * @param url 图片的Bitmap对象
+   * @param shareType 分享方式：好友======>1  朋友圈====>2
+   */
+  private boolean flag = false;
+  public boolean sharePic(String url, @WXShareType int shareType) {
+
+    WxThumUtils.covBitmapFromUrl(url, new BitmapCovListener() {
+      @Override public void covSuccess(Bitmap bitmap) {
+        //初始化一个WXImageObject对象
+        WXImageObject imageObj = new WXImageObject(bitmap);
+        flag = share(imageObj, bitmap, shareType);
+      }
+
+      @Override public void covFailure(String errorMsg) {
+        flag = false;
+      }
+    });
+    return flag;
+  }
+
+  /**
+   * 分享图片到朋友圈或者好友
+   *
    * @param bmp 图片的Bitmap对象
    * @param shareType 分享方式：好友======>1  朋友圈====>2
    */
   public boolean sharePic(Bitmap bmp, @WXShareType int shareType) {
     //初始化一个WXImageObject对象
     WXImageObject imageObj = new WXImageObject(bmp);
-    //设置缩略图
-    Bitmap thumb = Bitmap.createScaledBitmap(bmp, 60, 60, true);
-    bmp.recycle();
-    return share(imageObj, thumb, shareType);
+    ////设置缩略图
+    //Bitmap thumb = Bitmap.createScaledBitmap(bmp, 60, 60, true);
+    //bmp.recycle();
+    return share(imageObj, bmp, shareType);
   }
 
   /**
@@ -118,7 +142,7 @@ public class WXShareUtil {
       byte[] bt = null;
       Bitmap bitmap = WxThumUtils.extractThumbNail(thumb, 300, 300, false);
       if (null != bitmap) {
-       Bitmap  tempBitmap = WxThumUtils.checkImageSize(bitmap);
+        Bitmap tempBitmap = WxThumUtils.checkImageSize(bitmap);
         if (null != tempBitmap) {
           bt = WxThumUtils.compressBitmapToData(tempBitmap, 30);
         }
@@ -137,22 +161,6 @@ public class WXShareUtil {
       req.scene = SendMessageToWX.Req.WXSceneTimeline;
     }
     return api.sendReq(req);
-  }
-
-  public static Bitmap checkImageSize(Bitmap bitmap) {
-    //防止超长图文件大小超过微信限制，需要进行截取，暂定比例上限为5
-    final int MAX_RATIO = 5;
-    Bitmap result = bitmap;
-    if (bitmap != null) {
-      int width = bitmap.getWidth();
-      int height = bitmap.getHeight();
-      float ratio = width > height ? width * 1.0f / height : height * 1.0f / width;
-      if (ratio > MAX_RATIO) {
-        int size = Math.min(width, height);
-        result = Bitmap.createBitmap(bitmap, 0, 0, size, size);
-      }
-    }
-    return result;
   }
 
   private boolean isWXCanShare() {

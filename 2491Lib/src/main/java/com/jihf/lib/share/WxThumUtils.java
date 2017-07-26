@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import junit.framework.Assert;
 
 import static com.tencent.mm.sdk.platformtools.Util.MAX_DECODE_PICTURE_SIZE;
 
@@ -77,12 +76,12 @@ public class WxThumUtils {
           }
           mOptions.inJustDecodeBounds = true;
           Bitmap bitmap = BitmapFactory.decodeStream(bis);
+          Bitmap bm = BitmapFactory.decodeStream(bis, null, mOptions);
           if (null != bitmap) {
             listener.covSuccess(bitmap);
           } else {
             listener.covFailure("bitmap is null.");
           }
-          Bitmap bm = BitmapFactory.decodeStream(bis, null, mOptions);
           if (null != bm) {
             bm.recycle();
             bm = null;
@@ -100,14 +99,20 @@ public class WxThumUtils {
 
   public static Bitmap extractThumbNail(Bitmap bitmap, final int height, final int width, final boolean crop) {
     BitmapFactory.Options options = mOptions;
-    Assert.assertTrue(height > 0 && width > 0 && null != options);
-
+    if (null == options) {
+      options = new BitmapFactory.Options();
+    }
+    options.outHeight = options.outHeight == 0 ? -1 : options.outHeight;
+    options.outWidth = options.outWidth == 0 ? -1 : options.outWidth;
+    if (height <= 0 || width <= 0) {
+      Log.i(TAG, "extractThumbNail: \nheight：" + height + "\nwidth：" + width + "\noptions：" + options);
+      return null;
+    }
     try {
       options.inJustDecodeBounds = true;
-      Log.i(TAG, "extractThumbNail: round=" + width + "x" + height + ", crop=" + crop);
       final double beY = options.outHeight * 1.0 / height;
       final double beX = options.outWidth * 1.0 / width;
-      Log.d(TAG, "extractThumbNail: extract beX = " + beX + ", beY = " + beY);
+      Log.i(TAG, "extractThumbNail: extract beX = " + beX + ", beY = " + beY);
       options.inSampleSize = (int) (crop ? (beY > beX ? beX : beY) : (beY < beX ? beX : beY));
       if (options.inSampleSize <= 1) {
         options.inSampleSize = 1;
@@ -136,15 +141,15 @@ public class WxThumUtils {
 
       options.inJustDecodeBounds = false;
 
-      Log.i(TAG, "bitmap required size="
+      Log.i(TAG, "newWidth="
           + newWidth
-          + "x"
+          + "newHeight="
           + newHeight
-          + ", orig="
+          + ", options.outWidth="
           + options.outWidth
-          + "x"
+          + "options.outHeight"
           + options.outHeight
-          + ", sample="
+          + ", options.inSampleSize="
           + options.inSampleSize);
       Log.i(TAG, "bitmap decoded size=" + bitmap.getWidth() + "x" + bitmap.getHeight());
       final Bitmap scale = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);

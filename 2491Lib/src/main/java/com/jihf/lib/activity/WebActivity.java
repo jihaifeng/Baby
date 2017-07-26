@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import com.jihf.lib.R;
 import com.jihf.lib.app.BaseApplication;
@@ -16,13 +17,14 @@ import com.jihf.lib.base.BaseSimpleActivity;
 import com.jihf.lib.constans.Constans;
 import com.jihf.lib.constans.URLConfig;
 import com.jihf.lib.http.OkGoHelper;
+import com.jihf.lib.js.JsInterface;
 import com.jihf.lib.share.QQShareType;
 import com.jihf.lib.share.QQShareUtil;
 import com.jihf.lib.share.WXShareType;
 import com.jihf.lib.share.WXShareUtil;
+import com.jihf.lib.share.WxThumUtils;
 import com.jihf.lib.utils.BitmapCovListener;
 import com.jihf.lib.utils.LogUtils;
-import com.jihf.lib.share.WxThumUtils;
 import com.jihf.lib.widget.SharePopwindow;
 import com.just.library.AgentWeb;
 import java.io.IOException;
@@ -47,10 +49,11 @@ public class WebActivity extends BaseSimpleActivity implements View.OnClickListe
   private String webTitle;
   private String webUrl = URLConfig.getDefaultWebUrl();
   private SharePopwindow sharePopwindow;
-  private Bitmap shareBitmap;
-  private String shareUrl;
+  private Bitmap thumbBitmap;
+  private String thumbUrl;
   private String shareDesc;
   private OkGoHelper okGoHelper;
+  //private ShareInfoBean shareInfoBean;
 
   @Override protected int getLayoutId() {
     return R.layout.activity_web;
@@ -69,21 +72,33 @@ public class WebActivity extends BaseSimpleActivity implements View.OnClickListe
     webUrl = TextUtils.isEmpty(webKey) ? URLConfig.getDefaultWebUrl() : okGoHelper.appendDetailUrl(webKey);
     openUrl();
     setIvRight(R.mipmap.ic_share_logo, v -> {
-      WxThumUtils.covBitmapFromUrl(shareUrl, new BitmapCovListener() {
+      WxThumUtils.covBitmapFromUrl(thumbUrl, new BitmapCovListener() {
         @Override public void covSuccess(Bitmap bitmap) {
           Log.i(TAG, "covSuccess: " + bitmap);
-          shareBitmap = bitmap;
+          thumbBitmap = bitmap;
         }
 
         @Override public void covFailure(String errorMsg) {
           Log.i(TAG, "covFailure: " + errorMsg);
-          shareBitmap = BitmapFactory.decodeResource(getResources(), BaseApplication.logo);
+          thumbBitmap = BitmapFactory.decodeResource(getResources(), BaseApplication.logo);
         }
       });
       sharePopwindow = new SharePopwindow(WebActivity.this, WebActivity.this);
       sharePopwindow.showAtLocation(getRootView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
     });
+    //setShareInfo();
   }
+
+  //private void setShareInfo() {
+  //  if (null == shareInfoBean) {
+  //    shareInfoBean = new ShareInfoBean();
+  //  }
+  //  shareInfoBean.shareUrl = webUrl;
+  //  shareInfoBean.shareDesc = shareDesc;
+  //  shareInfoBean.shareTitle = webTitle;
+  //  shareInfoBean.shareThumbBitmap = thumbBitmap;
+  //  shareInfoBean.shareThumbUrl = thumbUrl;
+  //}
 
   private void openUrl() {
     mAgentWeb = AgentWeb.with(this)//传入Activity
@@ -91,14 +106,21 @@ public class WebActivity extends BaseSimpleActivity implements View.OnClickListe
         // 那么第二参数需要传入 RelativeLayout.LayoutParams
         .useDefaultIndicator()// 使用默认进度条
         .defaultProgressBarColor() // 使用默认进度条颜色
+        //.setWebViewClient(new WebViewClient() {
+        //  @Override public void onPageFinished(WebView view, String url) {
+        //    Log.i(TAG, "onPageFinished: " + url);
+        //    appendClick(view);
+        //  }
+        //})
         .setReceivedTitleCallback(
             (view, title) -> getToolBar().setTitle(TextUtils.isEmpty(webTitle) ? title : webTitle)) //设置 Web
         // 页面的 title 回调
         .createAgentWeb()//
+
         .ready()//
         .go(webUrl);
     mAgentWeb.getWebCreator().get().getSettings().setUserAgentString(URLConfig.getUA());
-
+    mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JsInterface(this));
     new Thread(new Runnable() {
       @Override public void run() {
         try {
@@ -106,9 +128,9 @@ public class WebActivity extends BaseSimpleActivity implements View.OnClickListe
           Document doc = Jsoup.connect(webUrl).get();
           Elements imgElements = doc.getElementsByTag("img");
           if (null != imgElements && imgElements.size() != 0) {
-            shareUrl = imgElements.first().absUrl("src");
+            thumbUrl = imgElements.first().absUrl("src");
           } else {
-            shareUrl = "";
+            thumbUrl = "";
           }
           Elements titleElements = doc.getElementsByTag("h1");
           Elements bodyElements = doc.getElementsByTag("p");
@@ -126,28 +148,41 @@ public class WebActivity extends BaseSimpleActivity implements View.OnClickListe
     }).start();
   }
 
+  private void appendClick(WebView view) {
+    view.loadUrl("javascript:(function(){"
+        + "var obj = document.getElementsByTagName(\"img\"); "
+        + "for(var i=0;i<obj.length;i++)  "
+        + "{"
+        + "    obj[i].onclick=function()  "
+        + "    {  "
+        + " window.android.shareImg(this.src)"
+        + "    }  "
+        + "}"
+        + "})()");
+  }
+
   @Override public void onClick(View v) {
     sharePopwindow.dismiss();
     sharePopwindow.backgroundAlpha(WebActivity.this, 1f);
-    Log.i(TAG, "onClick: " + shareUrl + "\n" + shareBitmap);
-    if (null == shareBitmap) {
-      shareBitmap = BitmapFactory.decodeResource(getResources(), BaseApplication.logo);
+    Log.i(TAG, "onClick: " + thumbUrl + "\n" + thumbBitmap);
+    if (null == thumbBitmap) {
+      thumbBitmap = BitmapFactory.decodeResource(getResources(), BaseApplication.logo);
     }
-    Log.i(TAG, "onClick: " + shareUrl + "\n" + shareBitmap + "\n" + shareDesc.length());
+    Log.i(TAG, "onClick: " + thumbUrl + "\n" + thumbBitmap + "\n" + shareDesc.length());
     if (v.getId() == R.id.tv_wx_friend) {
       // 微信分享给朋友
       WXShareUtil.getInstance(WebActivity.this)
-          .shareUrl(webUrl, webTitle, shareBitmap, shareDesc, WXShareType.WX_FRIEND);
+          .shareUrl(webUrl, webTitle, thumbBitmap, shareDesc, WXShareType.WX_FRIEND);
     } else if (v.getId() == R.id.tv_wx_circle) {
       // 微信分享给朋友圈
       WXShareUtil.getInstance(WebActivity.this)
-          .shareUrl(webUrl, webTitle, shareBitmap, shareDesc, WXShareType.WX_CIRCLE);
+          .shareUrl(webUrl, webTitle, thumbBitmap, shareDesc, WXShareType.WX_CIRCLE);
     } else if (v.getId() == R.id.tv_qq_friend) {
       // 分享到QQ
-      QQShareUtil.getInstance(WebActivity.this).shareUrl(webUrl, webTitle, shareDesc,shareUrl, QQShareType.QQ);
+      QQShareUtil.getInstance(WebActivity.this).shareUrl(webUrl, webTitle, shareDesc, thumbUrl, QQShareType.QQ);
     } else if (v.getId() == R.id.tv_qq_qzone) {
       // 分享到QQ空间
-      QQShareUtil.getInstance(WebActivity.this).shareUrl(webUrl, webTitle, shareDesc,shareUrl, QQShareType.QZONE);
+      QQShareUtil.getInstance(WebActivity.this).shareUrl(webUrl, webTitle, shareDesc, thumbUrl, QQShareType.QZONE);
     }
   }
 
