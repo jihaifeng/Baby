@@ -9,7 +9,7 @@ android {
     minSdkVersion 15
     targetSdkVersion 25
     versionCode 1
-    versionName "1.0.0"
+    versionName "1.0.1"
     manifestPlaceholders = [UMENG_CHANNEL_VALUE: "2491"] //默认名称
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     // 自定义输出配置，这里我们加上APK版本号1.0
