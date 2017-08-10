@@ -82,3 +82,21 @@ android {
   }
 
 ```
+8.修改隐式启动  
+```
+   <activity
+        android:name="com.jihf.lib.activity.SplashActivity"
+        android:theme="@style/StartTheme"
+        >
+      <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+             <action android:name="android.intent.action.VIEW"/>
+      
+             <category android:name="android.intent.category.DEFAULT"/>
+             <category android:name="android.intent.category.BROWSABLE"/>
+             <category android:name="android.intent.category.LAUNCHER"/>
+              // 修改此处 scheme 值
+             <data android:scheme="baby"/>
+      </intent-filter>
+    </activity>
+```

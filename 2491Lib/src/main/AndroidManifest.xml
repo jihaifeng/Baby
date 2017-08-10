@@ -16,8 +16,14 @@
         >
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
+        <action android:name="android.intent.action.VIEW"/>
 
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
         <category android:name="android.intent.category.LAUNCHER"/>
+
+        <data android:scheme="baby"/>
+
       </intent-filter>
     </activity>
     <!--浏览器页面-->
@@ -62,9 +68,9 @@
             android:name="UMENG_APPKEY"
             android:value="59672f6b65b6d61138000442"
             />-->
- <!--   <meta-data
-        android:name="UMENG_CHANNEL"
-        android:value="${UMENG_CHANNEL_VALUE}"
-        />-->
+    <!--   <meta-data
+           android:name="UMENG_CHANNEL"
+           android:value="${UMENG_CHANNEL_VALUE}"
+           />-->
   </application>
 </manifest>
