@@ -15,15 +15,9 @@
         android:theme="@style/StartTheme"
         >
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <action android:name="android.intent.action.VIEW"/>
+          <action android:name="android.intent.action.MAIN"/>
 
-        <category android:name="android.intent.category.DEFAULT"/>
-        <category android:name="android.intent.category.BROWSABLE"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-
-        <data android:scheme="baby"/>
-
+          <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
     <!--浏览器页面-->
@@ -37,7 +31,17 @@
         android:name="com.jihf.lib.activity.MainActivity"
         android:launchMode="singleTask"
         android:screenOrientation="portrait"
-        />
+        >
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+
+        <data android:scheme="baby"/>
+
+      </intent-filter>
+    </activity>
     <!--微信回调-->
     <activity
         android:name="com.jihf.lib.wxapi.WXEntryActivity"
